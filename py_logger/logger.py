@@ -1,3 +1,4 @@
+import inspect
 import json
 import logging
 import os
@@ -27,6 +28,15 @@ class Logger:
             cls._instance.__init__(*args, **kwargs)
         return cls._instance
 
+    def get_caller_function(self):
+        caller_frame = inspect.stack()[2]
+        caller_function = caller_frame.function
+        caller_filename = os.path.join(
+            os.path.basename(os.path.dirname(caller_frame.filename)),
+            os.path.basename(caller_frame.filename),
+        )
+        return f"{caller_filename}::{caller_function}"
+
     def __init__(
         self, log_file_path, file_format=None, console_format=None, time_format=None
     ):
@@ -50,7 +60,7 @@ class Logger:
             if time_format is None:
                 time_format = "%Y-%m-%d %H:%M:%S"
             if file_format is None:
-                file_format = "%(name)s | %(levelname)-8s | %(filename)-20s | %(funcName)s:%(lineno)d - %(message)s"
+                file_format = "%(levelname)-8s | - %(message)s"
             if console_format is None:
                 console_format = "%(levelname)-8s | %(message)s"
 
@@ -106,32 +116,32 @@ class Logger:
     def warning(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        self.logger.warning(msg)
+        self.logger.warning(f"{self.get_caller_function()} - {msg}")
 
     def error(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        self.logger.error(msg)
+        self.logger.error(f"{self.get_caller_function()} - {msg}")
 
     def critical(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        self.logger.critical(msg)
+        self.logger.critical(f"{self.get_caller_function()} - {msg}")
 
     def success(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        print(f"[green]| SUCCESS  | {msg}")
+        print(f"[green]SUCCESS  | {msg}")
 
     def failed(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        print(f"[bold red]| FAILED   | {msg}")
+        print(f"[bold red]FAILED   | {msg}")
 
     def message(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        print(f"[cyan1]| MESSAGE  | {msg}")
+        print(f"[cyan1]MESSAGE  | {msg}")
 
     def exception(self):
         console.print_exception(show_locals=True)
