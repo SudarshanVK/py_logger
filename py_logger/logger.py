@@ -50,9 +50,7 @@ class Logger:
             if time_format is None:
                 time_format = "%Y-%m-%d %H:%M:%S"
             if file_format is None:
-                file_format = (
-                    "%(name)s | %(levelname)-8s | %(funcName)s:%(lineno)d - %(message)s"
-                )
+                file_format = "%(name)s | %(levelname)-8s | %(filename)-20s | %(funcName)s:%(lineno)d - %(message)s"
             if console_format is None:
                 console_format = "%(levelname)-8s | %(message)s"
 
