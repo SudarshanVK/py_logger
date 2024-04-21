@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "py-logger"
+version = "0.1.0"
+description = ""
+authors = ["SVK <sudarshan.net09@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+rich = "^13.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
