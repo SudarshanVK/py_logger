@@ -2,6 +2,7 @@ import inspect
 import json
 import logging
 import os
+from datetime import datetime
 
 from rich import print
 from rich.console import Console
@@ -28,6 +29,9 @@ class Logger:
             cls._instance.__init__(*args, **kwargs)
         return cls._instance
 
+    def get_timestamp(self):
+        return datetime.now().strftime("%d-%m-%y %H:%M:%S")
+
     def get_caller_function(self):
         caller_frame = inspect.stack()[2]
         caller_function = caller_frame.function
@@ -37,9 +41,7 @@ class Logger:
         )
         return f"{caller_filename}::{caller_function}"
 
-    def __init__(
-        self, log_file_path, file_format=None, console_format=None, time_format=None
-    ):
+    def __init__(self, log_file_path):
         if not hasattr(self, "logger"):
             self.logger = logging.getLogger()
             self.logger.setLevel(logging.DEBUG)
@@ -56,16 +58,10 @@ class Logger:
             sh = logging.StreamHandler()
             sh.setLevel(console_log_level)
 
-            # Set log formats
-            if time_format is None:
-                time_format = "%Y-%m-%d %H:%M:%S"
-            if file_format is None:
-                file_format = "%(levelname)-8s | - %(message)s"
-            if console_format is None:
-                console_format = "%(levelname)-8s | %(message)s"
-
+            file_format = "%(asctime)s | %(levelname)-8s | %(message)s"
+            console_format = "%(asctime)s | %(levelname)-8s | %(message)s"
             # Create formatters and add them to the handlers
-            file_formatter = logging.Formatter(file_format, time_format)
+            file_formatter = logging.Formatter(file_format, datefmt="%d-%m-%y %H:%M:%S")
             fh.setFormatter(file_formatter)
 
             # Add color and styling to stream handler
@@ -88,16 +84,14 @@ class Logger:
                     message = super().format(record)
                     return f"{color_code}{message}\033[0m"  # RESET
 
-            console_formatter = ColorFormatter(console_format, time_format)
+            console_formatter = ColorFormatter(
+                console_format, datefmt="%d-%m-%y %H:%M:%S"
+            )
             sh.setFormatter(console_formatter)
 
             # Add the handlers to the logger
             self.logger.addHandler(fh)
             self.logger.addHandler(sh)
-
-            # # Add custom log levels
-            # self.add_custom_level("SUCCESS", logging.INFO + 1)
-            # self.add_custom_level("FAILED", logging.ERROR - 1)
 
     def add_custom_level(self, level_name, level_value):
         logging.addLevelName(level_value, level_name)
@@ -116,32 +110,32 @@ class Logger:
     def warning(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        self.logger.warning(f"{self.get_caller_function()} - {msg}")
+        self.logger.warning(f"{self.get_caller_function()} | {msg}")
 
     def error(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        self.logger.error(f"{self.get_caller_function()} - {msg}")
+        self.logger.error(f"{self.get_caller_function()} | {msg}")
 
     def critical(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        self.logger.critical(f"{self.get_caller_function()} - {msg}")
+        self.logger.critical(f"{self.get_caller_function()} | {msg}")
 
     def success(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        print(f"[green]SUCCESS  | {msg}")
+        print(f"{self.get_timestamp()} | [green]SUCCESS  | {msg}")
 
     def failed(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        print(f"[bold red]FAILED   | {msg}")
+        print(f"{self.get_timestamp()} | [bold red]FAILED   | {msg}")
 
     def message(self, msg, data=None):
         if data and isinstance(data, (dict, list)):
             msg += f" -\n{json.dumps(data, indent=4)}"
-        print(f"[cyan1]MESSAGE  | {msg}")
+        print(f"{self.get_timestamp()} | [cyan1]MESSAGE  | {msg}")
 
     def exception(self):
         console.print_exception(show_locals=True)

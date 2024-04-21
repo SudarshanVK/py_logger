@@ -80,6 +80,39 @@ LOGGER = logger.Logger(
 )
 
 ```
+
+# Example
+
+A simple example of using the py-logger package in a Python application:
+
+```python
+from py_logger import logger
+
+log = logger.Logger("app.log")
+
+def main():
+    log.success("This is a success message")
+    log.failed("This is a failed message")
+    log.message("This is a message")
+    log.debug("This is a debug message")
+    log.info("This is an info message")
+    log.error("This is an error message")
+    log.critical("This is a critical message")
+    log.warning("This is a warning message")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Will produce the following output:
+
+
+
+
+
+
+
 This will change the log format for both the file and console handlers.
 
 ## Author
