@@ -6,7 +6,7 @@ authors = ["SVK <sudarshan.net09@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 rich = "^13.7.1"
 
 
