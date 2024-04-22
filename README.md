@@ -22,7 +22,6 @@ poetry add git+https://github.com/SudarshanVK/py-logger.git
 2. Custom Log Levels: In addition to the standard log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL), the Logger class includes two custom log levels: "SUCCESS" and "FAILED".
 3. Color-Coded Output: The console log messages are color-coded based on the log level, with the "SUCCESS"messages displayed in green and the "FAILED" messages displayed in bright red.
 4. Singleton Pattern: The Logger class uses a singleton pattern, ensuring that there is only one instance of the logger throughout your application.
-5. Configurable Log Formats: You can customize the log formats for both the file and console handlers, as well as the time format used in the log messages.
 6. Environment Variable for Console Log Level: The console log level can be set using the `CONSOLE_LOG_LEVEL` environment variable, allowing you to easily adjust the verbosity of the console output.
 
 ## Usage
@@ -60,60 +59,8 @@ except Exception as e:
 
 ```
 
-The log messages will be written to both the app.log file and the console, with the appropriate log levels and color formatting.
-Customization
-You can customize the Logger class by passing additional parameters to the constructor:
+The log messages will be written to both a file and the console, with the appropriate log levels and color formatting.
 
-1. file_format: The log format for the file handler (default: "%(asctime)s | %(name)s | %(levelname)-8s | %(funcName)s:%(lineno)d - %(message)s").
-2. console_format: The log format for the console handler (default: "%(asctime)s | %(levelname)-8s | %(message)s").
-3. time_format: The time format for the log messages (default: "%Y-%m-%d %H:%M:%S").
-
-For example:
-
-```python
-from py_logger import logger
-
-LOGGER = logger.Logger(
-    "app.log",
-    file_format="%(asctime)s | %(name)s | %(levelname)-8s | %(message)s",
-    console_format="%(asctime)s | %(levelname)-8s | %(message)s",
-)
-
-```
-
-# Example
-
-A simple example of using the py-logger package in a Python application:
-
-```python
-from py_logger import logger
-
-log = logger.Logger("app.log")
-
-def main():
-    log.success("This is a success message")
-    log.failed("This is a failed message")
-    log.message("This is a message")
-    log.debug("This is a debug message")
-    log.info("This is an info message")
-    log.error("This is an error message")
-    log.critical("This is a critical message")
-    log.warning("This is a warning message")
-
-
-if __name__ == "__main__":
-    main()
-```
-
-Will produce the following output:
-
-
-
-
-
-
-
-This will change the log format for both the file and console handlers.
 
 ## Author
 
